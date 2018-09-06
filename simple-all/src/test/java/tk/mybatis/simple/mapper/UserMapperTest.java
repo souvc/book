@@ -25,7 +25,7 @@ public class UserMapperTest extends BaseMapperTest {
 			//获取 UserMapper 接口
 			UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
 			//调用 selectById 方法，查询 id = 1 的用户
-			SysUser user = userMapper.selectById(1l);
+			SysUser user = userMapper.selectById(1L);
 			//user 不为空
 			Assert.assertNotNull(user);
 			//userName = admin
@@ -76,7 +76,7 @@ public class UserMapperTest extends BaseMapperTest {
 		try {
 			UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
 			//调用 selectRolesByUserIdAndRoleEnabled 方法查询用户的角色
-			List<SysRole> roleList = userMapper.selectRolesByUserIdAndRoleEnabled(1L, null);
+			List<SysRole> roleList = userMapper.selectRolesByUserIdAndRoleEnabled(1L, 1);
 			//结果不为空
 			Assert.assertNotNull(roleList);
 			//角色数量大于 0 个
@@ -124,6 +124,10 @@ public class UserMapperTest extends BaseMapperTest {
 			user.setCreateTime(new Date());
 			//将新建的对象插入数据库中，特别注意，这里的返回值 result 是执行的 SQL 影响的行数
 			int result = userMapper.insert(user);
+
+			//测试是否插入
+			//sqlSession.commit();
+
 			//只插入 1 条数据
 			Assert.assertEquals(1, result);
 			//id 为 null，我们没有给 id 赋值，并且没有配置回写 id 的值
@@ -158,7 +162,10 @@ public class UserMapperTest extends BaseMapperTest {
 			Assert.assertNotNull(user.getId());
 			
 		} finally {
-			sqlSession.commit();
+			//sqlSession.commit();
+
+			sqlSession.rollback();
+
 			//不要忘记关闭 sqlSession
 			sqlSession.close();
 		}
